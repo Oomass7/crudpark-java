@@ -171,10 +171,10 @@ public class ParkingService {
      * @throws Exception Si hay algún error
      */
     public Payment registerPayment(Integer ticketId, String paymentMethod, Integer operatorId) throws Exception {
-        // Buscar el ticket
-        Ticket ticket = ticketDAO.findByTicketNumber(String.valueOf(ticketId));
+        // Buscar el ticket por ID
+        Ticket ticket = ticketDAO.findById(ticketId);
         if (ticket == null) {
-            throw new IllegalArgumentException("Ticket no encontrado");
+            throw new IllegalArgumentException("Ticket no encontrado con ID: " + ticketId);
         }
         
         if (ticket.getTotalAmount() == null || ticket.getTotalAmount().compareTo(BigDecimal.ZERO) == 0) {

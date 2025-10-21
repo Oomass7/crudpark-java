@@ -52,20 +52,12 @@ public class LoginFrame extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
-        // Icono de usuario
-        JLabel iconLabel = new JLabel("👤", SwingConstants.CENTER);
-        iconLabel.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 48));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        formPanel.add(iconLabel, gbc);
-        
         // Etiqueta de documento
         JLabel documentLabel = new JLabel("Documento:");
         documentLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
+        gbc.gridy = 6;
+        gbc.gridwidth = 6;
         gbc.anchor = GridBagConstraints.WEST;
         formPanel.add(documentLabel, gbc);
         

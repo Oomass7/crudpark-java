@@ -137,6 +137,33 @@ public class TicketDAO {
     }
     
     /**
+     * Busca un ticket por ID
+     */
+    public Ticket findById(Integer ticketId) throws SQLException {
+        String sql = "SELECT t.\"Id\", t.\"TicketNumber\", t.\"VehicleId\", t.\"OperatorId\", " +
+                    "t.\"SubscriptionId\", t.\"RateId\", t.\"EntryTime\", t.\"ExitTime\", " +
+                    "t.\"TotalAmount\", t.\"TotalMinutes\", t.\"QRCode\", t.\"CreatedAt\", " +
+                    "v.\"Plate\" as vehicle_plate, v.\"Type\" as vehicle_type, " +
+                    "o.\"FullName\" as operator_name " +
+                    "FROM public.\"Tickets\" t " +
+                    "INNER JOIN public.\"Vehicles\" v ON t.\"VehicleId\" = v.\"Id\" " +
+                    "LEFT JOIN public.\"Operators\" o ON t.\"OperatorId\" = o.\"Id\" " +
+                    "WHERE t.\"Id\" = ?";
+        
+        try (Connection conn = dbConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setInt(1, ticketId);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return mapResultSetToTicket(rs);
+            }
+        }
+        return null;
+    }
+    
+    /**
      * Busca un ticket por número
      */
     public Ticket findByTicketNumber(String ticketNumber) throws SQLException {
