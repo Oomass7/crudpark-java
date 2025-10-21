@@ -5,7 +5,6 @@ import com.crudzaso.crudpark.model.Rate;
 import com.crudzaso.crudpark.model.Ticket;
 import com.crudzaso.crudpark.service.ParkingService;
 import com.crudzaso.crudpark.dao.RateDAO;
-import com.crudzaso.crudpark.util.CurrencyFormatter;
 import com.crudzaso.crudpark.util.DateTimeFormatter;
 
 import javax.swing.*;
@@ -23,13 +22,11 @@ public class MainFrame extends JFrame {
     private final ParkingService parkingService;
     private final RateDAO rateDAO;
     
-    private JTabbedPane tabbedPane;
     private JTextField entryPlateField;
     private JComboBox<String> vehicleTypeCombo;
     private JTextField exitPlateField;
     private JTable openTicketsTable;
     private DefaultTableModel tableModel;
-    private JLabel operatorLabel;
     
     public MainFrame(Operator operator) {
         this.currentOperator = operator;
@@ -53,7 +50,7 @@ public class MainFrame extends JFrame {
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         
         // Tabs
-        tabbedPane = new JTabbedPane();
+        JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Arial", Font.PLAIN, 14));
         
         // Tab de ingreso
@@ -83,7 +80,7 @@ public class MainFrame extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         titleLabel.setForeground(Color.WHITE);
         
-        operatorLabel = new JLabel("Operador: " + currentOperator.getFullName());
+        JLabel operatorLabel = new JLabel("Operador: " + currentOperator.getFullName());
         operatorLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         operatorLabel.setForeground(Color.WHITE);
         

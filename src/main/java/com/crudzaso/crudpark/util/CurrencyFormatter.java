@@ -9,7 +9,10 @@ import java.util.Locale;
  */
 public class CurrencyFormatter {
     
-    private static final NumberFormat CURRENCY_FORMAT = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
+    // Constructor privado para evitar instanciación
+    private CurrencyFormatter() {
+        throw new UnsupportedOperationException("Utility class");
+    }
     
     /**
      * Formatea un BigDecimal como moneda colombiana
@@ -18,14 +21,16 @@ public class CurrencyFormatter {
         if (amount == null) {
             return "$0";
         }
-        return CURRENCY_FORMAT.format(amount);
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale.Builder().setLanguage("es").setRegion("CO").build());
+        return currencyFormat.format(amount);
     }
     
     /**
      * Formatea un double como moneda colombiana
      */
     public static String format(double amount) {
-        return CURRENCY_FORMAT.format(amount);
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale.Builder().setLanguage("es").setRegion("CO").build());
+        return currencyFormat.format(amount);
     }
     
     /**

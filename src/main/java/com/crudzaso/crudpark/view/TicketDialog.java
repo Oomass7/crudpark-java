@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
+import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
@@ -159,7 +160,19 @@ public class TicketDialog extends JDialog {
     
     private void printTicket() {
         PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(new TicketPrintable());
+        
+        // Configurar tamaño de papel para impresora térmica 58mm
+        Paper paper = new Paper();
+        double width = 58 * 72.0 / 25.4;  // 58mm a puntos (1 punto = 1/72 pulgada)
+        double height = 200 * 72.0 / 25.4; // Altura variable (200mm)
+        paper.setSize(width, height);
+        paper.setImageableArea(5, 5, width - 10, height - 10); // Márgenes pequeños
+        
+        PageFormat pageFormat = job.defaultPage();
+        pageFormat.setPaper(paper);
+        pageFormat.setOrientation(PageFormat.PORTRAIT);
+        
+        job.setPrintable(new TicketPrintable(), pageFormat);
         
         if (job.printDialog()) {
             try {
@@ -186,65 +199,78 @@ public class TicketDialog extends JDialog {
             Graphics2D g2d = (Graphics2D) graphics;
             g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
             
-            int y = 50;
-            int lineHeight = 20;
+            int y = 10;
+            int lineHeight = 15;
+            int x = 5; // Margen izquierdo pequeño
             
-            // Configurar fuente
-            g2d.setFont(new Font("Courier New", Font.BOLD, 14));
+            // Configurar fuente más pequeña para 58mm
+            g2d.setFont(new Font("Courier New", Font.BOLD, 9));
             
             // Título
-            g2d.drawString("============================", 50, y);
+            g2d.drawString("=======================", x, y);
             y += lineHeight;
-            g2d.drawString("  CrudPark - Crudzaso", 50, y);
+            g2d.drawString(" CrudPark - Crudzaso", x, y);
             y += lineHeight;
-            g2d.drawString("============================", 50, y);
-            y += lineHeight + 10;
+            g2d.drawString("=======================", x, y);
+            y += lineHeight + 5;
             
             // Información
-            g2d.setFont(new Font("Courier New", Font.PLAIN, 12));
-            g2d.drawString("Ticket #: " + ticket.getTicketNumber(), 50, y);
+            g2d.setFont(new Font("Courier New", Font.PLAIN, 8));
+            g2d.drawString("Ticket: " + ticket.getTicketNumber(), x, y);
             y += lineHeight;
-            g2d.drawString("Placa: " + ticket.getVehiclePlate(), 50, y);
+            g2d.drawString("Placa: " + ticket.getVehiclePlate(), x, y);
             y += lineHeight;
-            g2d.drawString("Tipo: " + ticket.getTicketType(), 50, y);
+            g2d.drawString("Tipo: " + ticket.getTicketType(), x, y);
             y += lineHeight;
-            g2d.drawString("Ingreso: " + DateTimeFormatter.formatDateTime(ticket.getEntryTime()), 50, y);
+            
+            // Dividir fecha y hora en dos líneas si es muy largo
+            String entryDateTime = DateTimeFormatter.formatDateTime(ticket.getEntryTime());
+            g2d.drawString("Ingreso:", x, y);
+            y += lineHeight;
+            g2d.drawString(" " + entryDateTime, x, y);
             y += lineHeight;
             
             if (!isEntry && ticket.getExitTime() != null) {
-                g2d.drawString("Salida: " + DateTimeFormatter.formatDateTime(ticket.getExitTime()), 50, y);
+                String exitDateTime = DateTimeFormatter.formatDateTime(ticket.getExitTime());
+                g2d.drawString("Salida:", x, y);
                 y += lineHeight;
-                g2d.drawString("Tiempo: " + DateTimeFormatter.formatDuration(ticket.getTotalMinutes()), 50, y);
+                g2d.drawString(" " + exitDateTime, x, y);
+                y += lineHeight;
+                g2d.drawString("Tiempo: " + DateTimeFormatter.formatDuration(ticket.getTotalMinutes()), x, y);
                 y += lineHeight;
                 
                 if (ticket.getTotalAmount() != null) {
-                    g2d.setFont(new Font("Courier New", Font.BOLD, 12));
-                    g2d.drawString("Total: " + CurrencyFormatter.format(ticket.getTotalAmount()), 50, y);
+                    g2d.setFont(new Font("Courier New", Font.BOLD, 9));
+                    g2d.drawString("Total: " + CurrencyFormatter.format(ticket.getTotalAmount()), x, y);
                     y += lineHeight;
-                    g2d.setFont(new Font("Courier New", Font.PLAIN, 12));
+                    g2d.setFont(new Font("Courier New", Font.PLAIN, 8));
                 }
             }
             
-            g2d.drawString("Operador: " + operator.getFullName(), 50, y);
-            y += lineHeight + 10;
+            g2d.drawString("Operador:", x, y);
+            y += lineHeight;
+            g2d.drawString(" " + operator.getFullName(), x, y);
+            y += lineHeight + 5;
             
-            // QR Code
+            // QR Code más pequeño para 58mm
             if (ticket.getQrCode() != null) {
                 try {
-                    BufferedImage qrImage = QRCodeGenerator.generateQRCode(ticket.getQrCode(), 150, 150);
-                    g2d.drawImage(qrImage, 75, y, null);
-                    y += 160;
+                    BufferedImage qrImage = QRCodeGenerator.generateQRCode(ticket.getQrCode(), 100, 100);
+                    // Centrar el QR (58mm ≈ 165 puntos, QR 100px, centrado = (165-100)/2 ≈ 32)
+                    g2d.drawImage(qrImage, 30, y, null);
+                    y += 110;
                 } catch (WriterException e) {
                     System.err.println("Error generando QR para impresión: " + e.getMessage());
                 }
             }
             
             // Mensaje final
-            g2d.drawString("----------------------------", 50, y);
+            g2d.setFont(new Font("Courier New", Font.PLAIN, 8));
+            g2d.drawString("-----------------------", x, y);
             y += lineHeight;
-            g2d.drawString("  Gracias por su visita", 50, y);
+            g2d.drawString(" Gracias por su visita", x, y);
             y += lineHeight;
-            g2d.drawString("============================", 50, y);
+            g2d.drawString("=======================", x, y);
             
             return PAGE_EXISTS;
         }

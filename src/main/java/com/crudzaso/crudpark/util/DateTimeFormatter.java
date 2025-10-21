@@ -1,16 +1,12 @@
 package com.crudzaso.crudpark.util;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 /**
  * Utilidad para formateo de fechas y horas
  */
 public class DateTimeFormatter {
-    
-    private static final java.time.format.DateTimeFormatter DATE_TIME_FORMAT = 
-        java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     
     private static final java.time.format.DateTimeFormatter DATE_FORMAT = 
         java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -20,6 +16,11 @@ public class DateTimeFormatter {
     
     private static final java.time.format.DateTimeFormatter DISPLAY_FORMAT = 
         java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    
+    // Constructor privado para evitar instanciación
+    private DateTimeFormatter() {
+        throw new UnsupportedOperationException("Utility class");
+    }
     
     /**
      * Formatea una fecha y hora para mostrar
