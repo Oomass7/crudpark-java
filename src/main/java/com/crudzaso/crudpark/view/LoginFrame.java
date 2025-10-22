@@ -56,8 +56,8 @@ public class LoginFrame extends JFrame {
         JLabel documentLabel = new JLabel("Documento:");
         documentLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         gbc.gridx = 0;
-        gbc.gridy = 6;
-        gbc.gridwidth = 6;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.WEST;
         formPanel.add(documentLabel, gbc);
         

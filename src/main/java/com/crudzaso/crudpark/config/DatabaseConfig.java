@@ -37,11 +37,17 @@ public class DatabaseConfig {
     
     private void loadConfiguration() {
         properties = new Properties();
-        try {
-            properties.load(new FileInputStream("config.properties"));
-            System.out.println("✓ Configuración cargada desde config.properties");
+        
+        // Cargar desde el classpath (resources)
+        try (var stream = getClass().getClassLoader().getResourceAsStream("database.properties")) {
+            if (stream != null) {
+                properties.load(stream);
+                System.out.println("✓ Configuración cargada desde database.properties");
+            } else {
+                throw new IOException("Archivo no encontrado en classpath");
+            }
         } catch (IOException e) {
-            System.out.println("⚠ No se encontró config.properties, usando valores por defecto");
+            System.out.println("⚠ No se encontró database.properties, usando valores por defecto");
             properties.setProperty("db.host", "localhost");
             properties.setProperty("db.port", "5432");
             properties.setProperty("db.name", "crudpark");
